@@ -68,3 +68,47 @@ def test_detailed_orders():
     assert orders[0][1] == 'Sergii'
     assert orders[0][2] == 'солодка вода'
     assert orders[0][3] == 'з цукром'
+
+
+@pytest.mark.database
+def test_user_list_is_not_empty():
+    db = Database()
+    users = db.get_all_users()
+    assert len(users) >= 1
+    #Перевірка що повертається хочаб 1 юзер
+
+
+@pytest.mark.database
+def test_get_user_not_exist_():
+    db = Database()
+    result = db.get_user_address_by_name('Anatoliiii')
+    assert result == []
+    #Перевірка повернення пустого списку при виклику за неймом неіснуючого юзера
+
+
+@pytest.mark.database
+def test_update_big_qnt():
+    db = Database()
+    db.insert_product(66, 'Сірники', 'Поштучно', 100)
+    db.update_product_qnt_by_id(66, 1000000000000000)
+    qnt = db.select_product_qnt_by_id(66)
+    assert qnt[0][0] == 1000000000000000
+    #Перевірка апдейту на дуууже велику кількість товару
+
+
+@pytest.mark.database
+def test_product_names_is_not_empty():
+    db = Database()
+    orders = db.get_detailed_orders()
+    for order in orders:
+        assert order[2] != ''
+    #Перевірка що заповнені всі назви товарів
+
+
+@pytest.mark.database
+def test_insert_product_not_in_stock():
+    db = Database()
+    db.insert_product(33, 'Товару немає на складі', 'Очікуйте поставку', 0)
+    qnt = db.select_product_qnt_by_id(33)
+    assert qnt[0][0] == 0
+    #Перевірка що запишеться товар із нульовою кількістю
