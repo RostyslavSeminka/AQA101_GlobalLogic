@@ -60,3 +60,26 @@ class SignInPage(BasePage):
         
         #Перевіряємо заголовок модалки
         assert modal_title.text.strip() == "Неправильні облікові дані"
+
+
+    def try_switch_login_to_sso(self):
+
+        #Шукаємо кнопку "Вхід без паролю"
+        button_elem = self.driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/main/section/div/div/main/section/div/div[2]/form/div/a/button")
+
+        #Емулюємо клік на кнопку "Вхід без паролю"
+        button_elem.click()
+
+    def check_url(self, expected_url):
+        return self.driver.current_url == expected_url
+    
+    def try_switch_sso_to_login(self):
+
+        #Шукаємо кнопку "Увійти з паролем"
+        button_elem = self.driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/main/section/div/div/main/section/div/div[2]/div/form/div[1]/a/button")
+
+        #Емулюємо клік на кнопку "Увійти з паролем"
+        button_elem.click()
+        
+    def check_url(self, expected_url):
+        return self.driver.current_url == expected_url
