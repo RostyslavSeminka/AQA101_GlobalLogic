@@ -45,7 +45,7 @@ class SignInPage(BasePage):
         self.driver.switch_to.default_content()
 
         # Чекаємо на результат (за необхідності збільшити якщо з'являється додаткова перевірка капчі)
-        time.sleep(5)
+        time.sleep(35)
 
         #Шукаємо кнопку "Увійти"
         button_elem = self.driver.find_element(By.CLASS_NAME, "button.btn.button.-primary")
@@ -83,3 +83,32 @@ class SignInPage(BasePage):
         
     def check_url(self, expected_url):
         return self.driver.current_url == expected_url
+    
+
+    def get_login_button_text(self):
+        login_button = self.driver.find_element(By.CLASS_NAME, "button.btn.button.-primary")
+        return login_button.text.strip()
+
+    def switch_language(self):
+        wait = WebDriverWait(self.driver, 10)
+
+        # Натискаємо на іконку мови
+        language_icon = wait.until(
+            EC.element_to_be_clickable((By.CLASS_NAME, "languages-icons")))
+        language_icon.click()
+
+        # Чекаємо на появу списку мов
+        lang_options = wait.until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "profile-item-name")))
+
+        current_text = self.get_login_button_text()
+
+        if "Увійти" in current_text:
+            target_language = "English"
+        else:
+            target_language = "Українська"
+
+        for option in lang_options:
+            if option.text.strip() == target_language:
+                option.click()
+                break
